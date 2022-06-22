@@ -7,6 +7,14 @@ name: app
 # The runtime the application uses.
 type: "php:7.4"
 
+# The extensions the runtime uses.
+runtime:
+  extensions:
+    - json
+	- msgpack
+	- igbinary
+    - redis
+
 # Configuration of the build of the application.
 build:
     flavor: composer
@@ -19,9 +27,18 @@ dependencies:
 hooks:
     build: |
         set -e
+
+        # Install Relay extension
+        bash .platform/install-relay.sh 0.4.1
+
         # Copy manually-provided plugins into the plugins directory.
         # This allows manually-provided and composer-provided plugins to coexist.
         rsync -a plugins/* wordpress/wp-content/plugins/
+
+        # Enable Redis Object Cache drop-in
+        if [ -f wordpress/wp-content/plugins/redis-cache/includes/object-cache.php ]; then
+            cp wordpress/wp-content/plugins/redis-cache/includes/object-cache.php wordpress/wp-content/object-cache.php
+        fi
 
 # The relationships of the application with services or other applications.
 # The left-hand side is the name of the relationship as it will be exposed
@@ -29,6 +46,7 @@ hooks:
 # side is in the form `<service name>:<endpoint name>`.
 relationships:
     database: "db:mysql"
+    redis: "rediscache:redis"
 
 # The configuration of app when it is exposed to the web.
 web:
@@ -79,4 +97,3 @@ source:
     auto-update:
       command: |
         curl -fsS https://raw.githubusercontent.com/platformsh/source-operations/main/setup.sh | { bash /dev/fd/3 sop-autoupdate; } 3<&0
-    

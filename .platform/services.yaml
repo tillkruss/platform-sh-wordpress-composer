@@ -6,3 +6,6 @@
 db:
     type: mariadb:10.4
     disk: 2048
+
+rediscache:
+    type: redis:7.0

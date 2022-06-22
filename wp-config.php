@@ -88,6 +88,22 @@ if ($config->isValidPlatform()) {
 			}
 		}
 	}
+
+	if ($config->hasRelationship('redis')) {
+        $credentials = $config->credentials('redis');
+
+		if (extension_loaded('relay')) {
+			define('WP_REDIS_CLIENT', 'relay');
+		} else {
+			define('WP_REDIS_CLIENT', 'phpredis');
+		}
+
+        define('WP_REDIS_HOST', $credentials['host']);
+        define('WP_REDIS_PORT', $credentials['port']);
+		define('WP_REDIS_DATABASE', 0);
+		define('WP_REDIS_TIMEOUT', 2.0);
+		define('WP_REDIS_READ_TIMEOUT', 2.0);
+    }
 }
 else {
   // Local configuration file should be in project root.

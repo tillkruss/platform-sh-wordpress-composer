@@ -32,10 +32,12 @@
     "wpackagist-theme/twentytwenty": "^2.0",
     "wpackagist-theme/twentytwentytwo": "^1.2",
     "wpackagist-theme/twentytwentyone": "^1.6",
-    "wpackagist-plugin/akismet": "^4.2"
+    "wpackagist-plugin/akismet": "^4.2",
+    "wpackagist-plugin/redis-cache": "^2.0"
   },
   "config": {
     "allow-plugins": {
+      "composer/installers": true,
       "johnpbloch/wordpress-core-installer": true
     }
   },
