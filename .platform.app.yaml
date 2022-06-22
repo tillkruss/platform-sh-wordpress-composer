@@ -11,8 +11,8 @@ type: "php:7.4"
 runtime:
   extensions:
     - json
-	- msgpack
-	- igbinary
+    - msgpack
+    - igbinary
     - redis
 
 # Configuration of the build of the application.
@@ -29,7 +29,7 @@ hooks:
         set -e
 
         # Install Relay extension
-        bash .platform/install-relay.sh 0.4.1
+        bash .platform-scripts/install-relay.sh 0.4.1
 
         # Copy manually-provided plugins into the plugins directory.
         # This allows manually-provided and composer-provided plugins to coexist.
