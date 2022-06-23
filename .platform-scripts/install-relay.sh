@@ -48,13 +48,13 @@ ensure_zstd() {
 	# Install Zstandard.
 	echo "Installing Zstandard."
 
-	dep_version="1.4.8"
+	dep_version="1.5.2"
 	dep_package="zstd-${dep_version}"
 	dep_url="https://github.com/facebook/zstd/archive/v${dep_version}.tar.gz"
 
 	curl -L $dep_url | tar xz
-	pushd ${dep_package} || exit 1
-	make install-static install-shared install-includes
+	pushd "${dep_package}/lib" || exit 1
+	make install-shared install-static install-headers
 	popd || exit 1
 }
 
