@@ -48,7 +48,7 @@ ensure_zstd() {
 	# Install Zstandard.
 	echo "Installing Zstandard."
 
-	dep_version="1.5.2"
+	dep_version="1.4.8"
 	dep_package="zstd-${dep_version}"
 	dep_url="https://github.com/facebook/zstd/archive/v${dep_version}.tar.gz"
 
