@@ -8,6 +8,7 @@ run() {
 	relay_build="relay-v${1}-php${php_version}-debian-${os_arch}"
 
 	if [ ! -f "${PLATFORM_CACHE_DIR}/${relay_build}/redis-pkg.so" ]; then
+		ensure_patchelf
 		ensure_zstd
 		ensure_source "$1" "$relay_build"
 	fi
@@ -41,7 +42,18 @@ ensure_source() {
 		# Inject UUID into Relay extension.
 		uuid=$(cat /proc/sys/kernel/random/uuid)
 		sed -i "s/BIN:31415926-5358-9793-2384-626433832795/BIN:$uuid/" relay-pkg.so
+
+		./../patchelf/bin/patchelf --version
 	fi
+}
+
+ensure_patchelf() {
+	# Install Patchelf.
+	echo "Installing Patchelf."
+
+	pushd patchelf || exit 1
+	curl -s -S -L "https://github.com/NixOS/patchelf/archive/patchelf-0.14.5-x86_64.tar.gz" | tar xz
+	popd || exit 1
 }
 
 ensure_zstd() {
@@ -54,7 +66,7 @@ ensure_zstd() {
 
 	curl -s -S -L $dep_url | tar xz
 	pushd "${dep_package}/lib" || exit 1
-	make install-shared install-static install-headers -s PREFIX=${PLATFORM_APP_DIR}
+	make install-shared install-static PREFIX=${PLATFORM_APP_DIR}
 	popd || exit 1
 }
 
