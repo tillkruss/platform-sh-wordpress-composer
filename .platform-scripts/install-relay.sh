@@ -59,10 +59,10 @@ ensure_patchelf() {
 		echo "Installing Patchelf."
 
 		mkdir -p patchelf
-		pushd patchelf || exit 1
+		cd patchelf || exit 1
 		curl -s -S -L "https://github.com/NixOS/patchelf/releases/download/0.14.5/patchelf-0.14.5-x86_64.tar.gz" | tar xz
 		cp bin/patchelf "${PLATFORM_APP_DIR}/patchelf"
-		popd || exit 1
+		cd .. || exit 1
 	fi
 }
 
