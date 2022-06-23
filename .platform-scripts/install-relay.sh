@@ -18,25 +18,27 @@ run() {
 
 copy_lib() {
 	# Copy the compiled library to the application directory.
+
 	echo "Installing Relay extension."
 	cp "${PLATFORM_CACHE_DIR}/${1}/relay-pkg.so" "${PLATFORM_APP_DIR}/relay.so"
 }
 
 enable_lib() {
 	# Tell PHP to enable the extension.
+
 	echo "Enabling Relay extension."
 	echo -e "\nextension=${PLATFORM_APP_DIR}/relay.so" >> "${PLATFORM_APP_DIR}/php.ini"
 }
 
 ensure_source() {
 	# Download the Relay extension.
-	if [ -d $2 ]; then
-		cd $2 || exit 1;
-	else
+
+	if [ ! -d $2 ]; then
 		relay_pkg_url="https://cachewerk.s3.amazonaws.com/relay/v$1/$2.tar.gz"
-		pwd
+
 		echo "Downloading: ${relay_pkg_url}"
 		curl -s -S -L $relay_pkg_url | tar xz -C $PLATFORM_CACHE_DIR
+
 		cd $2 || exit 1;
 
 		# Inject UUID into Relay extension.
@@ -49,26 +51,33 @@ ensure_source() {
 
 ensure_patchelf() {
 	# Install Patchelf.
-	echo "Installing Patchelf."
 
-	mkdir -p patchelf
-	cd patchelf || exit 1
-	curl -s -S -L "https://github.com/NixOS/patchelf/releases/download/0.14.5/patchelf-0.14.5-x86_64.tar.gz" | tar xz
-	cd ..
+	if [ ! -d $2 ]; then
+		echo "Installing Patchelf."
+
+		mkdir -p patchelf
+		pushd -q patchelf || exit 1
+		curl -s -S -L "https://github.com/NixOS/patchelf/releases/download/0.14.5/patchelf-0.14.5-x86_64.tar.gz" | tar xz
+		popd || exit 1
+	fi
 }
 
 ensure_zstd() {
 	# Install Zstandard.
-	echo "Installing Zstandard."
 
-	dep_version="1.5.2"
-	dep_package="zstd-${dep_version}"
-	dep_url="https://github.com/facebook/zstd/archive/v${dep_version}.tar.gz"
+	if [ ! -d $2 ]; then
+		echo "Installing Zstandard."
 
-	curl -s -S -L $dep_url | tar xz
-	cd "${dep_package}/lib" || exit 1
-	make install-shared install-static PREFIX=${PLATFORM_APP_DIR}
-	cd ..
+		dep_version="1.5.2"
+		dep_package="zstd-${dep_version}"
+		dep_url="https://github.com/facebook/zstd/archive/v${dep_version}.tar.gz"
+
+		curl -s -S -L $dep_url | tar xz
+
+		pushd -q "${dep_package}/lib" || exit 1
+		make install-shared install-static PREFIX=${PLATFORM_APP_DIR}
+		popd || exit 1
+	fi
 }
 
 ensure_environment() {
