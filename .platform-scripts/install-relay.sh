@@ -51,10 +51,12 @@ ensure_dependencies() {
 	git clone https://github.com/Microsoft/vcpkg.git
 	pushd vcpkg || exit 1
 
-	./bootstrap-vcpkg.sh
-	./vcpkg integrate install
-	./vcpkg install lz4
+	./bootstrap-vcpkg.sh --disableMetrics
 	./vcpkg install zstd
+	./vcpkg integrate install
+
+	ls -laR .
+	ls -laR /mnt/cache/app/vcpkg
 
 	popd || exit 1
 }
