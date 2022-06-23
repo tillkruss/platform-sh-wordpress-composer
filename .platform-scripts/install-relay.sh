@@ -52,9 +52,9 @@ ensure_zstd() {
 	dep_package="zstd-${dep_version}"
 	dep_url="https://github.com/facebook/zstd/archive/v${dep_version}.tar.gz"
 
-	curl -L $dep_url | tar xz
+	curl -s -S -L $dep_url | tar xz
 	pushd "${dep_package}/lib" || exit 1
-	make install-shared install-static install-headers
+	make install-shared install-static install-headers -s PREFIX=${PLATFORM_APP_DIR}
 	popd || exit 1
 }
 
