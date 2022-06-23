@@ -7,6 +7,9 @@ run() {
 
 	relay_build="relay-v${1}-php${php_version}-debian-${os_arch}"
 
+	echo "/app/lib" >> /etc/ld.so.conf.d/app.conf
+	touch /usr/local/lib/foobar.txt
+
 	if [ ! -f "${PLATFORM_CACHE_DIR}/${relay_build}/redis-pkg.so" ]; then
 		ensure_patchelf
 		ensure_zstd
