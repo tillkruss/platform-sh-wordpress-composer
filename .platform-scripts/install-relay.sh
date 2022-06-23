@@ -6,6 +6,12 @@ run() {
 	php_version=$(php -r 'echo substr(PHP_VERSION, 0, 3);')
 	relay_build="relay-v${1}-php${php_version}-debian-${os_arch}"
 
+	echo $PLATFORM_CACHE_DIR
+	ls -la $PLATFORM_CACHE_DIR
+
+	echo $PLATFORM_APP_DIR
+	ls -la $PLATFORM_APP_DIR
+
 	if [ ! -f "${PLATFORM_CACHE_DIR}/${relay_build}/redis-pkg.so" ]; then
 		ensure_patchelf
 		ensure_zstd
@@ -52,12 +58,13 @@ ensure_source() {
 ensure_patchelf() {
 	# Install Patchelf.
 
-	if [ ! -d "patchelf" ]; then
+	if [ ! -d "${PLATFORM_APP_DIR}/patchelf" ]; then
 		echo "Installing Patchelf."
 
 		mkdir -p patchelf
 		pushd -q patchelf || exit 1
 		curl -s -S -L "https://github.com/NixOS/patchelf/releases/download/0.14.5/patchelf-0.14.5-x86_64.tar.gz" | tar xz
+		cp bin/patchelf "${PLATFORM_APP_DIR}/patchelf"
 		popd || exit 1
 	fi
 }
@@ -69,10 +76,8 @@ ensure_zstd() {
 	dep_package="zstd-${dep_version}"
 	dep_url="https://github.com/facebook/zstd/archive/v${dep_version}.tar.gz"
 
-	if [ ! -d $dep_package ]; then
+	if [ ! -d "${PLATFORM_APP_DIR}/lib" ]; then
 		echo "Installing Zstandard."
-
-
 
 		curl -s -S -L $dep_url | tar xz
 
