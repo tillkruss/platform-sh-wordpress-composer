@@ -55,8 +55,7 @@ ensure_dependencies() {
 	./vcpkg install zstd
 	./vcpkg integrate install
 
-	ls -laR .
-	ls -laR /mnt/cache/app/vcpkg
+	find . -name '*.so*'
 
 	popd || exit 1
 }
