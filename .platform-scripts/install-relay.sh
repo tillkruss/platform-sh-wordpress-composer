@@ -6,12 +6,6 @@ run() {
 	php_version=$(php -r 'echo substr(PHP_VERSION, 0, 3);')
 	relay_build="relay-v${1}-php${php_version}-debian-${os_arch}"
 
-	echo $PLATFORM_CACHE_DIR
-	ls -la $PLATFORM_CACHE_DIR
-
-	echo $PLATFORM_APP_DIR
-	ls -la $PLATFORM_APP_DIR
-
 	if [ ! -f "${PLATFORM_CACHE_DIR}/${relay_build}/redis-pkg.so" ]; then
 		ensure_patchelf
 		ensure_zstd
@@ -51,7 +45,7 @@ ensure_source() {
 		uuid=$(cat /proc/sys/kernel/random/uuid)
 		sed -i "s/BIN:31415926-5358-9793-2384-626433832795/BIN:$uuid/" relay-pkg.so
 
-		./../patchelf/bin/patchelf
+		./${PLATFORM_APP_DIR}/patchelf --replace-needed libzstd.so.1 ${PLATFORM_APP_DIR}/lib/libzstd.so relay-pkg.so
 	fi
 }
 
