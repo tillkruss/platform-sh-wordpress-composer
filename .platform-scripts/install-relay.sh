@@ -20,6 +20,7 @@ copy_lib() {
 	# Copy the compiled library to the application directory.
 
 	echo "Installing Relay extension."
+	ldd "${PLATFORM_CACHE_DIR}/${1}/relay-pkg.so"
 	cp "${PLATFORM_CACHE_DIR}/${1}/relay-pkg.so" "${PLATFORM_APP_DIR}/relay.so"
 }
 
@@ -45,8 +46,9 @@ ensure_source() {
 		uuid=$(cat /proc/sys/kernel/random/uuid)
 		sed -i "s/BIN:31415926-5358-9793-2384-626433832795/BIN:$uuid/" relay-pkg.so
 
-W: .platform-scripts/install-relay.sh: line 48: .//app/patchelf: No such file or directory
+		ldd relay-pkg.so
 		${PLATFORM_APP_DIR}/patchelf --replace-needed libzstd.so.1 ${PLATFORM_APP_DIR}/lib/libzstd.so relay-pkg.so
+		ldd relay-pkg.so
 	fi
 }
 
