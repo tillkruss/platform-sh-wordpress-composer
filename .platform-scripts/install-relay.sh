@@ -5,9 +5,10 @@ run() {
 	os_arch=$(uname -m | sed 's/_/-/')
 	php_version=$(php -r 'echo substr(PHP_VERSION, 0, 3);')
 
-	relay_build="relay-v$1-php$php_version-debian-$os_arch"
+	relay_build="relay-v${1}-php${php_version}-debian-${os_arch}"
 
-	if [ ! -f "${PLATFORM_CACHE_DIR}/phpredis/modules/redis.so" ]; then
+	if [ ! -f "${PLATFORM_CACHE_DIR}/${relay_build}/redis-pkg.so" ]; then
+		ensure_dependencies
 		ensure_source "$1" "$relay_build"
 	fi
 
@@ -18,13 +19,13 @@ run() {
 copy_lib() {
 	# Copy the compiled library to the application directory.
 	echo "Installing Relay extension."
-	cp $PLATFORM_CACHE_DIR/$1/relay-pkg.so $PLATFORM_APP_DIR/relay.so
+	cp "${PLATFORM_CACHE_DIR}/${1}/relay-pkg.so" "${PLATFORM_APP_DIR}/relay.so"
 }
 
 enable_lib() {
 	# Tell PHP to enable the extension.
 	echo "Enabling Relay extension."
-	echo -e "\nextension=${PLATFORM_APP_DIR}/relay.so" >> $PLATFORM_APP_DIR/php.ini
+	echo -e "\nextension=${PLATFORM_APP_DIR}/relay.so" >> "${PLATFORM_APP_DIR}/php.ini"
 }
 
 ensure_source() {
@@ -33,7 +34,7 @@ ensure_source() {
 		cd $2 || exit 1;
 	else
 		relay_pkg_url="https://cachewerk.s3.amazonaws.com/relay/v$1/$2.tar.gz"
-		echo "Downloading: $relay_pkg_url"
+		echo "Downloading: ${relay_pkg_url}"
 		curl -s -S -L $relay_pkg_url | tar xz -C $PLATFORM_CACHE_DIR
 		cd $2 || exit 1;
 
@@ -41,6 +42,21 @@ ensure_source() {
 		uuid=$(cat /proc/sys/kernel/random/uuid)
 		sed -i "s/BIN:31415926-5358-9793-2384-626433832795/BIN:$uuid/" relay-pkg.so
 	fi
+}
+
+ensure_dependencies() {
+	# Install the dependencies required by Relay.
+	echo "Installing Relay dependencies."
+
+	git clone https://github.com/Microsoft/vcpkg.git
+	pushd vcpkg || exit 1
+
+	./bootstrap-vcpkg.sh
+	./vcpkg integrate install
+	./vcpkg install lz4
+	./vcpkg install zstd
+
+	popd || exit 1
 }
 
 ensure_environment() {
