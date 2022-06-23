@@ -54,7 +54,7 @@ ensure_zstd() {
 
 	curl -L $dep_url | tar xz
 	pushd ${dep_package} || exit 1
-	make install-shared
+	make install-static install-shared install-includes
 	popd || exit 1
 }
 
