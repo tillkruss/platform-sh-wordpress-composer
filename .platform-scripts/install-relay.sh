@@ -51,6 +51,7 @@ ensure_patchelf() {
 	# Install Patchelf.
 	echo "Installing Patchelf."
 
+	mkdir patchelf
 	pushd patchelf || exit 1
 	curl -s -S -L "https://github.com/NixOS/patchelf/archive/patchelf-0.14.5-x86_64.tar.gz" | tar xz
 	popd || exit 1
