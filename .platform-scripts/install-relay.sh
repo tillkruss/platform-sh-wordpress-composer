@@ -7,9 +7,6 @@ run() {
 
 	relay_build="relay-v${1}-php${php_version}-debian-${os_arch}"
 
-	echo "/app/lib" >> /etc/ld.so.conf.d/app.conf
-	touch /usr/local/lib/foobar.txt
-
 	if [ ! -f "${PLATFORM_CACHE_DIR}/${relay_build}/redis-pkg.so" ]; then
 		ensure_patchelf
 		ensure_zstd
@@ -54,9 +51,9 @@ ensure_patchelf() {
 	# Install Patchelf.
 	echo "Installing Patchelf."
 
-	mkdir patchelf
+	mkdir -p patchelf
 	pushd patchelf || exit 1
-	curl -s -S -L "https://github.com/NixOS/patchelf/archive/patchelf-0.14.5-x86_64.tar.gz" | tar xz
+	curl -s -S -L "https://github.com/NixOS/patchelf/releases/download/0.14.5/patchelf-0.14.5-x86_64.tar.gz" | tar xz
 	popd || exit 1
 }
 
