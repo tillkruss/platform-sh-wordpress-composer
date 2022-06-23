@@ -45,14 +45,14 @@ ensure_source() {
 		uuid=$(cat /proc/sys/kernel/random/uuid)
 		sed -i "s/BIN:31415926-5358-9793-2384-626433832795/BIN:$uuid/" relay-pkg.so
 
-		./../patchelf/bin/patchelf --version
+		./../patchelf/bin/patchelf
 	fi
 }
 
 ensure_patchelf() {
 	# Install Patchelf.
 
-	if [ ! -d $2 ]; then
+	if [ ! -d "patchelf" ]; then
 		echo "Installing Patchelf."
 
 		mkdir -p patchelf
@@ -65,12 +65,14 @@ ensure_patchelf() {
 ensure_zstd() {
 	# Install Zstandard.
 
-	if [ ! -d $2 ]; then
+	dep_version="1.5.2"
+	dep_package="zstd-${dep_version}"
+	dep_url="https://github.com/facebook/zstd/archive/v${dep_version}.tar.gz"
+
+	if [ ! -d $dep_package ]; then
 		echo "Installing Zstandard."
 
-		dep_version="1.5.2"
-		dep_package="zstd-${dep_version}"
-		dep_url="https://github.com/facebook/zstd/archive/v${dep_version}.tar.gz"
+
 
 		curl -s -S -L $dep_url | tar xz
 
