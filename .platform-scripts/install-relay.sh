@@ -48,14 +48,16 @@ ensure_dependencies() {
 	# Install the dependencies required by Relay.
 	echo "Installing Relay dependencies."
 
-	git clone https://github.com/Microsoft/vcpkg.git
-	pushd vcpkg || exit 1
+	apt-get install zstd
 
-	./bootstrap-vcpkg.sh --disableMetrics
-	./vcpkg install zstd
-	./vcpkg integrate install
+	# git clone https://github.com/Microsoft/vcpkg.git
+	# pushd vcpkg || exit 1
 
-	find . -name '*.so*'
+	# ./bootstrap-vcpkg.sh --disableMetrics
+	# ./vcpkg install zstd
+	# ./vcpkg integrate install
+
+	# find . -name '*.so*'
 
 	popd || exit 1
 }
