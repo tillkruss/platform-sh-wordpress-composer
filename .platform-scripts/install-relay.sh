@@ -4,7 +4,6 @@ run() {
 
 	os_arch=$(uname -m | sed 's/_/-/')
 	php_version=$(php -r 'echo substr(PHP_VERSION, 0, 3);')
-
 	relay_build="relay-v${1}-php${php_version}-debian-${os_arch}"
 
 	if [ ! -f "${PLATFORM_CACHE_DIR}/${relay_build}/redis-pkg.so" ]; then
@@ -52,9 +51,9 @@ ensure_patchelf() {
 	echo "Installing Patchelf."
 
 	mkdir -p patchelf
-	pushd patchelf || exit 1
+	cd patchelf || exit 1
 	curl -s -S -L "https://github.com/NixOS/patchelf/releases/download/0.14.5/patchelf-0.14.5-x86_64.tar.gz" | tar xz
-	popd || exit 1
+	cd ..
 }
 
 ensure_zstd() {
@@ -66,9 +65,9 @@ ensure_zstd() {
 	dep_url="https://github.com/facebook/zstd/archive/v${dep_version}.tar.gz"
 
 	curl -s -S -L $dep_url | tar xz
-	pushd "${dep_package}/lib" || exit 1
+	cd "${dep_package}/lib" || exit 1
 	make install-shared install-static PREFIX=${PLATFORM_APP_DIR}
-	popd || exit 1
+	cd ..
 }
 
 ensure_environment() {
