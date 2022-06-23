@@ -34,6 +34,7 @@ ensure_source() {
 		cd $2 || exit 1;
 	else
 		relay_pkg_url="https://cachewerk.s3.amazonaws.com/relay/v$1/$2.tar.gz"
+		pwd
 		echo "Downloading: ${relay_pkg_url}"
 		curl -s -S -L $relay_pkg_url | tar xz -C $PLATFORM_CACHE_DIR
 		cd $2 || exit 1;
