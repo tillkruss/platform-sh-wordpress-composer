@@ -62,10 +62,10 @@ ensure_patchelf() {
 		echo "Installing Patchelf."
 
 		mkdir -p patchelf
-		pushd -q patchelf || exit 1
+		pushd patchelf || exit 1
 		curl -s -S -L "https://github.com/NixOS/patchelf/releases/download/0.14.5/patchelf-0.14.5-x86_64.tar.gz" | tar xz
 		cp bin/patchelf "${PLATFORM_APP_DIR}/patchelf"
-		popd || exit 1
+		popd -q || exit 1
 	fi
 }
 
@@ -81,9 +81,9 @@ ensure_zstd() {
 
 		curl -s -S -L $dep_url | tar xz
 
-		pushd -q "${dep_package}/lib" || exit 1
+		pushd "${dep_package}/lib" || exit 1
 		make install-shared install-static PREFIX=${PLATFORM_APP_DIR}
-		popd || exit 1
+		popd -q || exit 1
 	fi
 }
 
