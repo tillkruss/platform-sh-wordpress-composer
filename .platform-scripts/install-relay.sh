@@ -34,7 +34,7 @@ ensure_source() {
 	else
 		relay_pkg_url="https://cachewerk.s3.amazonaws.com/relay/v$1/$2.tar.gz"
 		echo "Downloading: $relay_pkg_url"
-		curl -L $relay_pkg_url | tar xz -C $PLATFORM_CACHE_DIR
+		curl -s -S -L $relay_pkg_url | tar xz -C $PLATFORM_CACHE_DIR
 		cd $2 || exit 1;
 
 		# Inject UUID into Relay extension.
