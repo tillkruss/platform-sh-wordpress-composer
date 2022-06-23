@@ -8,7 +8,7 @@ run() {
 	relay_build="relay-v${1}-php${php_version}-debian-${os_arch}"
 
 	if [ ! -f "${PLATFORM_CACHE_DIR}/${relay_build}/redis-pkg.so" ]; then
-		ensure_dependencies
+		ensure_zstd
 		ensure_source "$1" "$relay_build"
 	fi
 
@@ -44,21 +44,17 @@ ensure_source() {
 	fi
 }
 
-ensure_dependencies() {
-	# Install the dependencies required by Relay.
-	echo "Installing Relay dependencies."
+ensure_zstd() {
+	# Install Zstandard.
+	echo "Installing Zstandard."
 
-	apt-get install zstd
+	dep_version="1.5.2"
+	dep_package="zstd-${dep_version}"
+	dep_url="https://github.com/facebook/zstd/archive/v${dep_version}.tar.gz"
 
-	# git clone https://github.com/Microsoft/vcpkg.git
-	# pushd vcpkg || exit 1
-
-	# ./bootstrap-vcpkg.sh --disableMetrics
-	# ./vcpkg install zstd
-	# ./vcpkg integrate install
-
-	# find . -name '*.so*'
-
+	curl -L $dep_url | tar xz
+	pushd ${dep_package} || exit 1
+	make install -s
 	popd || exit 1
 }
 
