@@ -4,7 +4,7 @@ run() {
 
 	os_arch=$(uname -m | sed 's/_/-/')
 	php_version=$(php -r 'echo substr(PHP_VERSION, 0, 3);')
-	relay_build="relay-v${1}-php${php_version}-debian-${os_arch}"
+	relay_build="relay-${1}-php${php_version}-debian-${os_arch}+zts"
 
 	if [ ! -f "${PLATFORM_CACHE_DIR}/${relay_build}/redis-pkg.so" ]; then
 		ensure_patchelf
@@ -35,7 +35,7 @@ ensure_source() {
 	# Download the Relay extension.
 
 	if [ ! -d $2 ]; then
-		relay_pkg_url="https://cachewerk.s3.amazonaws.com/relay/v$1/$2.tar.gz"
+		relay_pkg_url="https://cachewerk.s3.amazonaws.com/relay/$1/$2.tar.gz"
 
 		echo "Downloading: ${relay_pkg_url}"
 		curl -s -S -L $relay_pkg_url | tar xz -C $PLATFORM_CACHE_DIR

@@ -29,7 +29,8 @@ hooks:
         set -e
 
         # Install Relay extension
-        bash .platform-scripts/install-relay.sh 0.4.1
+        # bash .platform-scripts/install-relay.sh v0.4.2
+        bash .platform-scripts/install-relay.sh dev
 
         # Copy manually-provided plugins into the plugins directory.
         # This allows manually-provided and composer-provided plugins to coexist.
