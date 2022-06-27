@@ -35,7 +35,7 @@ ensure_source() {
 	# Download the Relay extension.
 
 	if [ ! -d $2 ]; then
-		relay_pkg_url="https://cachewerk.s3.amazonaws.com/relay/$1/$2.tar.gz"
+		relay_pkg_url="https://cachewerk.s3.amazonaws.com/relay/$1/${2//+/%2B}.tar.gz"
 
 		echo "Downloading: ${relay_pkg_url}"
 		curl -s -S -L $relay_pkg_url | tar xz -C $PLATFORM_CACHE_DIR
